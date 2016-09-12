@@ -1,0 +1,14 @@
+**/*.sw[op]
+
+*.tar.gz
+
+# Logs
+logs
+*.log
+
+# Directories:
+/htdocs/wp-content/themes/bright/node_modules/
+
+
+
+*sublime-*
