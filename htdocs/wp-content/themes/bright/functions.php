@@ -124,7 +124,28 @@ function bright_scripts() {
 		wp_enqueue_script( 'comment-reply' );
 	}
 }
+
+
 add_action( 'wp_enqueue_scripts', 'bright_scripts' );
+
+
+add_action('woocommerce_ajax_added_to_cart', 'added_to_cart');
+
+// for the jquery cart box
+// wp_enqueue_script( 'app', get_template_directory_uri() . '/js/app.js', array("jquery"));
+// add_thickbox();
+
+
+
+add_filter( 'woocommerce_add_to_cart_redirect', '__return_false' );
+
+
+// disables redirection on the add to cart button
+// add_filter( 'woocommerce_add_to_cart_redirect', 'custom_redirect_function' );
+//     function custom_redirect_function() {
+//     return get_permalink( wc_get_page_id( 'shop' ) );
+// }
+
 
 /**
  * Implement the Custom Header feature.
@@ -150,3 +171,8 @@ require get_template_directory() . '/inc/customizer.php';
  * Load Jetpack compatibility file.
  */
 require get_template_directory() . '/inc/jetpack.php';
+
+/**
+ * Load WooCommerce compatibility file.
+ */
+require get_template_directory() . '/inc/woocommerce.php';

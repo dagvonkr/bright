@@ -94,7 +94,7 @@
 	  });
 
 	  // Scroll animation for menu
-	  $("a").on('click', function (event) {
+	  $(".scroll").on('click', function (event) {
 
 	    // Make sure this.hash has a value before overriding default behavior
 	    if (this.hash !== "") {
@@ -115,16 +115,98 @@
 	  });
 
 	  // hamburger
+	  // lag et område som denne fungerer på. Finn en annen måte og
+	  // lukke X'en, som er avhengig av menyen og ikke bare on/off on click
+
+	  // åkai, HTML under her er vel og bra for alt, men bare ikke på å trigge
+	  // hamburger animasjon
+
+	  // Lag true/false --> open === true/false og if animasjonen. Sjekk currentTarget i e (sjekk console log)
+
+	  var hamburgerIsOpen = false;
+
 	  $('html').on('click', function (e) {
-	    if ($(e.target).parents('.site-content').length == 0) {
-	      console.log('Click');
+
+	    hamburgerIsOpen = false;
+
+	    if ($(e.target).parents('.menu-btn').length == 0) {
+	      // console.log('Click');
 	      $('.responsive-menu').hide('expand');
 	    }
+
+	    // console.log('are you open hamburger menu?', hamburgerIsOpen)
+
+	    // console.log('responsive menu over-->', $('.responsive-menu'))
 	  });
-	  $('.bax-menu').on('click', '.menu-btn', function (e) {
+
+	  $('.menu-wrapper').on('click', '.menu-btn', function (e) {
+
+	    hamburgerIsOpen = true;
+
 	    e.stopPropagation();
+	    console.log('Click expand');
 	    $('.responsive-menu').toggle('expand');
+	    $('.menu-btn').toggleClass('open');
+
+	    console.log('are you open hamburger menu?', hamburgerIsOpen);
+
+	    console.log('responsivemenu-->', $('.responsive-menu'));
 	  });
+
+	  if (hamburgerIsOpen) {
+	    $('.menu-btn').toggleClass('open');
+	  }
+
+	  // hamburger icon animation
+	  // $('.menu-btn').click(function(){
+	  //   $(this).toggleClass('open');
+	  //   console.log('hamburger animation')
+	  // });
+
+	  // Mini cart
+	  $('body').on('added_to_cart', function (e, data) {
+	    //alert('Added ' + data['div.widget_shopping_cart_content']);
+	    if ($('#hidden_cart').length == 0) {
+	      //add cart contents only once
+	      //$('.added_to_cart').after('<a href="#TB_inline?width=600&height=550&inlineId=hidden_cart" class="thickbox">View my inline content!</a>');
+	      $(this).append('<a href="#TB_inline?width=300&height=550&inlineId=hidden_cart" id="show_hidden_cart" title="<h2>Cart</h2>" class="thickbox" style="display:none"></a>');
+	      $(this).append('<div id="hidden_cart" style="display:none">' + data['div.widget_shopping_cart_content'] + '</div>');
+	    }
+	    $('#show_hidden_cart').click();
+	  });
+
+	  $("form.cart").on("change", "input.qty", function () {
+	    if (this.value === "0") this.value = "1";
+
+	    $(this.form).find("button[data-quantity]").data("quantity", this.value);
+	  });
+
+	  /* remove old "view cart" text, only need latest one thanks! */
+	  $(document.body).on("adding_to_cart", function () {
+	    $("a.added_to_cart").remove();
+	  });
+
+	  // $('.menu-cart').click('added_to_cart',function(e,data) {
+	  //         if ($('#hidden_cart').length == 0) { //add cart contents only once
+	  //             $(this).append('<a href="#TB_inline?width=300&height=250&inlineId=hidden_cart" id="show_hidden_cart" title="<h2>Cart</h2>" class="thickbox" style="display:none"></a>');
+
+	  //       // Some customization:
+
+	  //         $(this).append('<div id="hidden_cart" style="display:none">'+' '+'</div>');
+	  //         }
+	  //         $('#show_hidden_cart').click();
+
+	  //     });
+
+	  // $('.menu-cart').click('added_to_cart',function(e,data) {
+	  //     //alert('Added ' + data['div.widget_shopping_cart_content']);
+	  //     if ($('#hidden_cart').length == 0) { //add cart contents only once
+	  //         //$('.added_to_cart').after('<a href="#TB_inline?width=600&height=550&inlineId=hidden_cart" class="thickbox">View my inline content!</a>');
+	  //         $(this).append('<a href="#TB_inline?width=300&height=550&inlineId=hidden_cart" id="show_hidden_cart" title="<h2>Cart</h2>" class="thickbox" style="display:none"></a>');
+	  //         $(this).append('<div id="hidden_cart" style="display:none">'+data['div.widget_shopping_cart_content']+'</div>');
+	  //     }
+	  //     $('#show_hidden_cart').click();
+	  // });
 
 	  // Animation fadeIn on scroll
 	  $(window).scroll(function () {
@@ -145,17 +227,19 @@
 	  // Slick carousel
 	  $('.produkt-carousel').slick({
 	    centerMode: true,
-	    centerPadding: '10px',
+	    centerPadding: '60px',
+	    speed: 400,
 	    slidesToShow: 3,
 	    autoplay: true,
 	    dots: false,
+	    arrows: false,
 	    responsive: [{
-	      breakpoint: 768,
+	      breakpoint: 750,
 	      settings: {
 	        arrows: false,
 	        centerMode: true,
-	        centerPadding: '40px',
-	        slidesToShow: 1
+	        centerPadding: '0px',
+	        slidesToShow: 3
 	      }
 	    }, {
 	      breakpoint: 480,
@@ -168,14 +252,35 @@
 	    }]
 	  });
 
+	  // + - Read more animations and hover
+
+	  // switch image on hover
+	  // var sourceSwap = function () {
+	  //   var $this = $(this);
+	  //   var newSource = $this.data('alt-src');
+	  //   $this.data('alt-src', $this.attr('src'));
+	  //   $this.attr('src', newSource);
+	  // }
+	  // $('.btn-collapse').hover(function() {
+	  //   $('img.plus').each(sourceSwap, sourceSwap);
+	  // });
+
 	  // Kenneths expand/collapse
 	  $('body').on('click', '.btn-collapse', function (e) {
+
+	    // if ($.trim($(this).text()) === 'See more') {
+	    //   $(this).text('See less');
+	    // }
+	    // else {
+	    //     $(this).text('See more');
+	    // }
 
 	    e.preventDefault();
 	    var collapseID = e.currentTarget.hash;
 	    var $collapseContainer = $(collapseID);
 
 	    if (collapseID == "") {
+
 	      var row_number = $(this).closest('.collapse-container').prev().attr('data-row-number');
 	      $(".profiles > li[data-row-number='" + row_number + "']").removeClass('active');
 	      $(this).closest('.collapse-container').slideToggle("normal");
@@ -183,12 +288,41 @@
 	      toggleCollapse(collapseID);
 	    }
 
-	    if ($(this).hasClass('btn-collapse--scroll')) {
-	      //Scroll to top of content container
-	      $('html, body').animate({
-	        scrollTop: $collapseContainer.offset().top
-	      }, 500);
+	    if ($(this).hasClass('btn-collapse--scroll') || $(this).hasClass('btn-collapse-2-scroll')) {
+
+	      var expandingContainer = $(this).attr('data-container-expanded');
+
+	      if (expandingContainer === 'true') {
+
+	        // product containers
+	        if ($(this).hasClass('btn-collapse--scroll')) {
+	          $('html, body').animate({
+	            scrollTop: $collapseContainer.offset().top + 400
+	          }, 400);
+	        }
+
+	        // our story and about containera
+	        if ($(this).hasClass('btn-collapse-2-scroll')) {
+	          $('html, body').animate({
+	            scrollTop: $collapseContainer.offset().top - 250
+
+	          }, 400);
+	        }
+
+	        // console.log('closest-->',  $(this).closest('.btn-collapse--scroll').find('.plus'))
+	        $(this).closest('.max-width-container').find('.plus').addClass('plus-rotate');
+	        $(this).closest('.max-width-container').find('.readmore-text').text('See less');
+	      } else {
+	        $('html, body').animate({
+	          scrollTop: $(this).closest('.max-width-container').offset().top - 100
+	        }, 400);
+
+	        $(this).closest('.max-width-container').find('.plus').removeClass('plus-rotate');
+	        $(this).closest('.max-width-container').find('.readmore-text').text('See more');
+	      }
 	    }
+
+	    // making a seperate so the scroll will be different
 	  });
 
 	  function toggleCollapse(collapseID) {
@@ -197,8 +331,8 @@
 	    //Toggles data-expanded attribute for each button with same target container
 	    $('.btn-collapse[href="' + collapseID + '"]').each(function () {
 	      $(this).attr('data-container-expanded', $(this).attr('data-container-expanded') == 'true' ? 'false' : 'true');
+	      // her tenker jeg man lager custom attributes
 	    });
-
 	    //Toggle state content container open/close
 	    //600ms, 400ms and 200ms, respectively "slow", "normal", "fast"
 	    $collapseContainer.slideToggle("normal", function () {});
@@ -230,7 +364,7 @@
 	    //////////////////////////////////
 	    var profile_list = $('.profiles > li');
 	    var profile_row_count = 0;
-	    var collapse_container = "<li class='collapse-container' data-expanded='false'>" + "<div class='profile--content'></div>" + "<a href='#' class='btn-collapse'>" + "<span class='text-less'>See Less</span>" + "</a>" + "</li>";
+	    var collapse_container = "<li class='collapse-container' data-expanded='false'>" + "<div class='profile--content'></div>" + "<a href='#' class='btn-collapse'>" + "<span class='text-less-people'>See Less</span>" + "</a>" + "</li>";
 
 	    // Initialize Functions
 	    //////////////////////////////////
@@ -238,7 +372,7 @@
 	    var get_profile_row_count = function get_profile_row_count() {
 	      switch (breakpoint.get_value()) {
 	        case "smartphone":
-	          return 1;break;
+	          return 2;break;
 	        case "tablet":
 	          return 2;break;
 	        case "desktop":
@@ -301,6 +435,29 @@
 	  }();
 
 	  $(window).on('breakpoint', collapse_profile.set_profile_row_count).trigger('breakpoint');
+
+	  // google maps
+	  google.maps.event.addDomListener(window, 'load', init);
+	  function init() {
+	    var mapOptions = {
+	      // How zoomed in you want the map to start at (always required)
+	      zoom: 12,
+	      // The latitude and longitude to center the map (always required)
+	      center: new google.maps.LatLng(59.92640, 10.67598),
+	      styles: [{ "featureType": "administrative", "elementType": "labels.text.fill", "stylers": [{ "color": "#444444" }] }, { "featureType": "landscape", "elementType": "all", "stylers": [{ "color": "#fbf6ed" }] }, { "featureType": "poi", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road", "elementType": "all", "stylers": [{ "saturation": -100 }, { "lightness": "100" }, { "visibility": "simplified" }, { "gamma": "0.66" }, { "weight": "0.75" }] }, { "featureType": "road.highway", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "road.arterial", "elementType": "labels.icon", "stylers": [{ "visibility": "off" }] }, { "featureType": "transit", "elementType": "all", "stylers": [{ "visibility": "off" }] }, { "featureType": "water", "elementType": "all", "stylers": [{ "color": "#46bcec" }, { "visibility": "on" }] }, { "featureType": "water", "elementType": "geometry.fill", "stylers": [{ "color": "#cecece" }] }, { "featureType": "water", "elementType": "labels.text", "stylers": [{ "color": "#181818" }] }]
+	    };
+	    var mapElement = document.getElementById('map');
+	    var map = new google.maps.Map(mapElement, mapOptions);
+
+	    var marker = new google.maps.Marker({
+	      position: new google.maps.LatLng(40.6700, -73.9400),
+	      map: map,
+	      title: 'Snazzy!'
+	    });
+	  }
+
+	  // autofocus on the input
+	  $(':input').focus();
 	});
 
 /***/ },
